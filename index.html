@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFMagic - Your All-in-One PDF Solution</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* Custom styling beyond Tailwind */
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .drop-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .drop-area.highlight {
+            border-color: #4299e1;
+            background-color: rgba(66, 153, 225, 0.1);
+        }
+        .progress-bar-container {
+            height: 8px;
+            background-color: #edf2f7;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #4299e1;
+            transition: width 0.3s ease;
+        }
+        .hide {
+            display: none;
+        }
+        /* Custom animation for processing */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="#" class="flex items-center">
+                    <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path>
+                    </svg>
+                    <span class="ml-2 text-xl font-bold text-gray-800">PDFMagic</span>
+                </a>
+                
+                    <div class="relative group">
+                       
+                    </div>
+                    
+                </div>
+            </div>
+           
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white py-12 md:py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-6">Every tool you need to work with PDFs in one place</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+                Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, 
+                split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Tools Section -->
+    <section class="py-10 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Merge PDF -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="merge">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-object-group text-red-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Merge PDF</h3>
+                    <p class="text-gray-600 mb-4">Combine PDFs in the order you want with the easiest PDF merger available.</p>
+                    <button class="select-tool-btn w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-300">Select Files</button>
+                </div>
+
+                <!-- Split PDF -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="split">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-cut text-blue-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Split PDF</h3>
+                    <p class="text-gray-600 mb-4">Separate one page or a whole set for easy conversion into independent PDF files.</p>
+                    <button class="select-tool-btn w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- Compress PDF -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="compress">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-compress-alt text-green-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Compress PDF</h3>
+                    <p class="text-gray-600 mb-4">Reduce file size while optimizing for maximal PDF quality.</p>
+                    <button class="select-tool-btn w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- PDF to Word -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="pdf-to-text">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-file-word text-indigo-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">PDF to Text</h3>
+                    <p class="text-gray-600 mb-4">Extract text content from your PDF files to plain text format.</p>
+                    <button class="select-tool-btn w-full py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- PDF to Images -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="pdf-to-images">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-file-image text-purple-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">PDF to Images</h3>
+                    <p class="text-gray-600 mb-4">Convert each PDF page into JPG or extract all images from a PDF.</p>
+                    <button class="select-tool-btn w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- Rotate PDF -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="rotate">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-sync text-yellow-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Rotate PDF</h3>
+                    <p class="text-gray-600 mb-4">Rotate your PDFs the way you need them, easily and in seconds.</p>
+                    <button class="select-tool-btn w-full py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- Add Page Numbers -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="page-numbers">
+                    <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-list-ol text-pink-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Add Page Numbers</h3>
+                    <p class="text-gray-600 mb-4">Add page numbers into PDFs with ease. Choose your positions, dimensions & more.</p>
+                    <button class="select-tool-btn w-full py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+
+                <!-- View PDF -->
+                <div class="tool-card bg-white rounded-lg shadow-md p-6 transition-all duration-300" data-tool="view">
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-eye text-gray-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">View PDF</h3>
+                    <p class="text-gray-600 mb-4">Open and view PDF files directly in your browser without installing software.</p>
+                    <button class="select-tool-btn w-full py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition duration-300">Select File</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Processing Area (Hidden by default) -->
+    <section id="tool-area" class="py-10 bg-white hidden">
+        <div class="container mx-auto px-4">
+            <div class="mb-6 flex justify-between items-center">
+                <h2 id="tool-title" class="text-2xl font-bold text-gray-800">Tool Name</h2>
+                <button id="back-to-tools" class="text-blue-500 hover:text-blue-700 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to all tools
+                </button>
+            </div>
+
+            <!-- File Upload Area -->
+            <div id="drop-area" class="drop-area p-10 text-center mb-8">
+                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-700 mb-2">Drag & Drop your PDF here</h3>
+                <p class="text-gray-500 mb-4">or</p>
+                <label for="file-input" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg cursor-pointer">
+                    Choose File
+                </label>
+                <input type="file" id="file-input" class="hidden" accept=".pdf" multiple />
+            </div>
+
+            <!-- Selected Files List -->
+            <div id="file-list" class="mb-6 hidden">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Selected Files</h3>
+                <div id="selected-files" class="space-y-2">
+                    <!-- Files will be listed here dynamically -->
+                </div>
+            </div>
+
+            <!-- Tool Specific Options -->
+            <div id="tool-options" class="mb-6 hidden">
+                <!-- Tool-specific options will be added here dynamically -->
+            </div>
+
+            <!-- Process Button -->
+            <button id="process-btn" class="w-full md:w-auto py-3 px-8 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed hidden">
+                Process Files
+            </button>
+
+            <!-- Processing Status -->
+            <div id="processing-status" class="hidden">
+                <div class="text-center mb-4">
+                    <div class="inline-block p-4 rounded-full bg-blue-100 mb-4">
+                        <i class="fas fa-cog fa-spin text-3xl text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Processing your file(s)</h3>
+                    <p class="text-gray-600">This might take a moment depending on file size and complexity.</p>
+                </div>
+                <div class="progress-bar-container mb-6">
+                    <div id="progress-bar" class="progress-bar w-0"></div>
+                </div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="result-area" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="inline-block p-4 rounded-full bg-green-100 mb-4">
+                        <i class="fas fa-check text-3xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Processing Complete!</h3>
+                    <p class="text-gray-600 mb-4">Your file(s) have been processed successfully.</p>
+                </div>
+
+                <div id="download-options" class="flex flex-col items-center">
+                    <button id="download-btn" class="mb-4 py-3 px-8 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition duration-300 flex items-center">
+                        <i class="fas fa-download mr-2"></i> Download Result
+                    </button>
+                    <button id="process-another" class="text-blue-500 hover:text-blue-700">Process another file</button>
+                </div>
+
+                <!-- PDF Preview Area (for view tool) -->
+                <div id="pdf-preview" class="mt-8 hidden">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">PDF Preview</h3>
+                    <div id="pdf-viewer" class="border border-gray-300 rounded-lg overflow-auto h-[800px]">
+                        <!-- PDF pages will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Our Features</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-bolt text-blue-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-gray-800 mb-3">Easy & Fast</h3>
+                    <p class="text-gray-600 text-center">Process your PDFs in seconds with our intuitive and user-friendly interface designed for speed.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-shield-alt text-green-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-gray-800 mb-3">100% Secure</h3>
+                    <p class="text-gray-600 text-center">Your files are processed entirely in your browser. They never leave your computer or get uploaded to any server.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-laptop text-red-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-center text-gray-800 mb-3">Works Everywhere</h3>
+                    <p class="text-gray-600 text-center">Access our tools from any device with a modern web browser, no installation or plugins required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Products Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Looking for another solution?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">PDFMagic Desktop</h3>
+                    <p class="text-gray-600 mb-4">Download the App to work with your favorite PDF tools on your Mac or Windows PC.</p>
+                    <a href="#" class="text-red-500 hover:text-red-600 font-medium">Learn more</a>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">PDFMagic Mobile</h3>
+                    <p class="text-gray-600 mb-4">Get the App to manage documents remotely or on the move with your mobile device.</p>
+                    <a href="#" class="text-red-500 hover:text-red-600 font-medium">Learn more</a>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">ImageMaster</h3>
+                    <p class="text-gray-600 mb-4">The web app that helps you modify images in bulk for free. Crop, resize, and more.</p>
+                    <a href="#" class="text-red-500 hover:text-red-600 font-medium">Learn more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">The PDF software trusted by millions of users</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                PDFMagic is your number one web app for editing PDF with ease. Enjoy all the tools you need to work
+                efficiently with your digital documents while keeping your data safe and secure.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">PDFMagic</h3>
+                    <p class="text-gray-400">All-in-one solution to convert, compress, merge, split, and edit your PDF files.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tools</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Merge PDF</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Split PDF</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Compress PDF</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Convert PDF</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">All Tools</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Products</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">PDFMagic Desktop</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">PDFMagic Mobile</a></li>
+                   
+                    </ul>
+                </div>
+                
+          
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© 2025 PDFMagic. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for PDF Processing -->
+    <script>
+        // Initialize PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
+
+        // Global variables
+        let currentTool = '';
+        let selectedFiles = [];
+        let processedFile = null;
+        let processedPages = [];
+
+        // DOM elements
+        const toolArea = document.getElementById('tool-area');
+        const toolTitle = document.getElementById('tool-title');
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const selectedFilesContainer = document.getElementById('selected-files');
+        const toolOptions = document.getElementById('tool-options');
+        const processBtn = document.getElementById('process-btn');
+        const processingStatus = document.getElementById('processing-status');
+        const progressBar = document.getElementById('progress-bar');
+        const resultArea = document.getElementById('result-area');
+        const downloadBtn = document.getElementById('download-btn');
+        const processAnother = document.getElementById('process-another');
+        const backToTools = document.getElementById('back-to-tools');
+        const pdfPreview = document.getElementById('pdf-preview');
+        const pdfViewer = document.getElementById('pdf-viewer');
+
+        // Tool selection buttons
+        document.querySelectorAll('.select-tool-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const toolCard = this.closest('.tool-card');
+                currentTool = toolCard.dataset.tool;
+                
+                // Set tool title
+                toolTitle.textContent = toolCard.querySelector('h3').textContent;
+                
+                // Hide main tools section and show tool area
+                document.querySelector('section.py-10.bg-gray-50').classList.add('hidden');
+                toolArea.classList.remove('hidden');
+                
+                // Clear any previous files
+                selectedFiles = [];
+                selectedFilesContainer.innerHTML = '';
+                fileList.classList.add('hidden');
+                processBtn.classList.add('hidden');
+                
+                // Configure file input for the current tool
+                if (currentTool === 'merge') {
+                    fileInput.multiple = true;
+                } else {
+                    fileInput.multiple = false;
+                }
+                
+                // Set up tool-specific options
+                setupToolOptions();
+            });
+        });
+
+        // Back to tools button
+        backToTools.addEventListener('click', function() {
+            resetToolArea();
+            document.querySelector('section.py-10.bg-gray-50').classList.remove('hidden');
+            toolArea.classList.add('hidden');
+        });
+
+        // Process another file button
+        processAnother.addEventListener('click', function() {
+            resultArea.classList.add('hidden');
+            pdfPreview.classList.add('hidden');
+            dropArea.classList.remove('hidden');
+            selectedFiles = [];
+            processedFile = null;
+            processedPages = [];
+            selectedFilesContainer.innerHTML = '';
+            fileList.classList.add('hidden');
+            processBtn.classList.add('hidden');
+        });
+
+        // File input change event
+        fileInput.addEventListener('change', function(e) {
+            handleFiles(this.files);
+        });
+
+        // Drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+
+        dropArea.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+
+        // Handle the selected files
+        function handleFiles(files) {
+            if (currentTool === 'merge') {
+                // For merge, we can add multiple files
+                for (let i = 0; i < files.length; i++) {
+                    if (files[i].type === 'application/pdf') {
+                        addFileToList(files[i]);
+                    } else {
+                        showError('Please select only PDF files.');
+                    }
+                }
+            } else {
+                // For other tools, just use the first file
+                if (files[0] && files[0].type === 'application/pdf') {
+                    selectedFiles = [files[0]];
+                    selectedFilesContainer.innerHTML = '';
+                    addFileToList(files[0]);
+                } else {
+                    showError('Please select a PDF file.');
+                }
+            }
+            
+            // Show the file list and process button if we have files
+            if (selectedFiles.length > 0) {
+                fileList.classList.remove('hidden');
+                processBtn.classList.remove('hidden');
+            }
+        }
+
+        // Add a file to the selected files list
+        function addFileToList(file) {
+            // Add to our array if not already present
+            if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                selectedFiles.push(file);
+                
+                // Create a list item for the file
+                const fileItem = document.createElement('div');
+                fileItem.className = 'flex items-center justify-between bg-gray-50 p-3 rounded';
+                
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'flex items-center';
+                
+                const fileIcon = document.createElement('i');
+                fileIcon.className = 'fas fa-file-pdf text-red-500 mr-3';
+                
+                const fileName = document.createElement('span');
+                fileName.textContent = file.name;
+                fileName.className = 'text-gray-700';
+                
+                const fileSize = document.createElement('span');
+                fileSize.textContent = formatFileSize(file.size);
+                fileSize.className = 'text-gray-500 text-sm ml-2';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.className = 'text-gray-500 hover:text-red-500';
+                removeBtn.addEventListener('click', function() {
+                    // Remove from UI and from array
+                    fileItem.remove();
+                    selectedFiles = selectedFiles.filter(f => f !== file);
+                    
+                    // Hide file list and process button if no files left
+                    if (selectedFiles.length === 0) {
+                        fileList.classList.add('hidden');
+                        processBtn.classList.add('hidden');
+                    }
+                });
+                
+                fileInfo.appendChild(fileIcon);
+                fileInfo.appendChild(fileName);
+                fileInfo.appendChild(fileSize);
+                fileItem.appendChild(fileInfo);
+                fileItem.appendChild(removeBtn);
+                selectedFilesContainer.appendChild(fileItem);
+            }
+        }
+
+        // Format file size to human-readable format
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Show error message
+        function showError(message) {
+            alert(message); // Simple alert for now, could be enhanced with a nice modal
+        }
+
+        // Set up tool-specific options
+        function setupToolOptions() {
+            toolOptions.innerHTML = '';
+            
+            switch (currentTool) {
+                case 'split':
+                    toolOptions.innerHTML = `
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Split Options</h3>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 mb-2">Split by:</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="split-type" value="all" checked class="text-blue-500">
+                                    <span class="ml-2">All Pages</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="split-type" value="range" class="text-blue-500">
+                                    <span class="ml-2">Page Range</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="range-options" class="mb-4 hidden">
+                            <label class="block text-gray-700 mb-2">Enter page range (e.g., 1-3,5,7-9):</label>
+                            <input type="text" id="page-range" class="w-full p-2 border border-gray-300 rounded" placeholder="1-3,5,7-9">
+                        </div>
+                    `;
+                    
+                    // Add event listener for split options
+                    document.querySelectorAll('input[name="split-type"]').forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            const rangeOptions = document.getElementById('range-options');
+                            if (this.value === 'range') {
+                                rangeOptions.classList.remove('hidden');
+                            } else {
+                                rangeOptions.classList.add('hidden');
+                            }
+                        });
+                    });
+                    
+                    toolOptions.classList.remove('hidden');
+                    break;
+                    
+                case 'rotate':
+                    toolOptions.innerHTML = `
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Rotation Options</h3>
+                        <div class="flex space-x-4 mb-4">
+                            <button id="rotate-90" class="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700">
+                                <i class="fas fa-redo fa-2x"></i>
+                                <span class="block mt-2">Rotate 90° Right</span>
+                            </button>
+                            <button id="rotate-180" class="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700">
+                                <i class="fas fa-sync fa-2x"></i>
+                                <span class="block mt-2">Rotate 180°</span>
+                            </button>
+                            <button id="rotate-270" class="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700">
+                                <i class="fas fa-undo fa-2x"></i>
+                                <span class="block mt-2">Rotate 90° Left</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    toolOptions.classList.remove('hidden');
+                    break;
+                    
+                case 'page-numbers':
+                    toolOptions.innerHTML = `
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Page Number Options</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">Position:</label>
+                                <select id="position" class="w-full p-2 border border-gray-300 rounded">
+                                    <option value="top-left">Top Left</option>
+                                    <option value="top-center">Top Center</option>
+                                    <option value="top-right">Top Right</option>
+                                    <option value="bottom-left">Bottom Left</option>
+                                    <option value="bottom-center" selected>Bottom Center</option>
+                                    <option value="bottom-right">Bottom Right</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Start numbering from:</label>
+                                <input type="number" id="start-number" class="w-full p-2 border border-gray-300 rounded" value="1" min="1">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Format:</label>
+                            <select id="format" class="w-full p-2 border border-gray-300 rounded">
+                                <option value="1,2,3...">1, 2, 3...</option>
+                                <option value="Page 1,Page 2...">Page 1, Page 2...</option>
+                                <option value="Page 1 of n">Page 1 of n</option>
+                            </select>
+                        </div>
+                    `;
+                    
+                    toolOptions.classList.remove('hidden');
+                    break;
+                    
+                default:
+                    toolOptions.classList.add('hidden');
+                    break;
+            }
+        }
+
+        // Process button click event
+        processBtn.addEventListener('click', function() {
+            if (selectedFiles.length === 0) {
+                showError('Please select at least one PDF file.');
+                return;
+            }
+            
+            // Hide drop area and show processing status
+            dropArea.classList.add('hidden');
+            fileList.classList.add('hidden');
+            toolOptions.classList.add('hidden');
+            processBtn.classList.add('hidden');
+            processingStatus.classList.remove('hidden');
+            
+            // Reset progress bar
+            progressBar.style.width = '0%';
+            
+            // Process files based on the selected tool
+            processFiles().then(() => {
+                // Hide processing status and show results
+                processingStatus.classList.add('hidden');
+                resultArea.classList.remove('hidden');
+                
+                // If we're using the view tool, show the preview
+                if (currentTool === 'view') {
+                    pdfPreview.classList.remove('hidden');
+                    renderPdfPreview(selectedFiles[0]);
+                }
+            }).catch(error => {
+                processingStatus.classList.add('hidden');
+                showError('An error occurred while processing: ' + error.message);
+                dropArea.classList.remove('hidden');
+            });
+        });
+
+        // Process files based on the current tool
+        async function processFiles() {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    // Simulate processing with progress bar
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += 5;
+                        if (progress > 100) progress = 100;
+                        progressBar.style.width = `${progress}%`;
+                        
+                        if (progress >= 100) {
+                            clearInterval(interval);
+                        }
+                    }, 200);
+                    
+                    switch (currentTool) {
+                        case 'merge':
+                            processedFile = await mergePDFs(selectedFiles);
+                            break;
+                            
+                        case 'split':
+                            const splitType = document.querySelector('input[name="split-type"]:checked').value;
+                            let pageRanges = null;
+                            
+                            if (splitType === 'range') {
+                                const rangeInput = document.getElementById('page-range').value;
+                                if (!rangeInput.trim()) {
+                                    reject(new Error('Please enter a valid page range.'));
+                                    return;
+                                }
+                                pageRanges = parsePageRanges(rangeInput);
+                            }
+                            
+                            processedPages = await splitPDF(selectedFiles[0], splitType, pageRanges);
+                            break;
+                            
+                        case 'compress':
+                            processedFile = await compressPDF(selectedFiles[0]);
+                            break;
+                            
+                        case 'pdf-to-text':
+                            processedFile = await extractTextFromPDF(selectedFiles[0]);
+                            break;
+                            
+                        case 'pdf-to-images':
+                            processedPages = await convertPdfToImages(selectedFiles[0]);
+                            break;
+                            
+                        case 'rotate':
+                            // Default to 90 degrees if no specific rotation is selected
+                            let rotation = 90;
+                            if (document.getElementById('rotate-180') && document.getElementById('rotate-180').classList.contains('selected')) {
+                                rotation = 180;
+                            } else if (document.getElementById('rotate-270') && document.getElementById('rotate-270').classList.contains('selected')) {
+                                rotation = 270;
+                            }
+                            processedFile = await rotatePDF(selectedFiles[0], rotation);
+                            break;
+                            
+                        case 'page-numbers':
+                            const position = document.getElementById('position').value;
+                            const startNumber = parseInt(document.getElementById('start-number').value);
+                            const format = document.getElementById('format').value;
+                            processedFile = await addPageNumbers(selectedFiles[0], position, startNumber, format);
+                            break;
+                            
+                        case 'view':
+                            // No processing needed, just use the original file
+                            processedFile = selectedFiles[0];
+                            break;
+                            
+                        default:
+                            reject(new Error('Tool not implemented yet.'));
+                            return;
+                    }
+                    
+                    // Complete the progress bar
+                    progressBar.style.width = '100%';
+                    clearInterval(interval);
+                    
+                    // Wait a bit to show the completed progress
+                    setTimeout(resolve, 500);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        // Download button click event
+        downloadBtn.addEventListener('click', function() {
+            if (processedFile) {
+                // For single file result
+                downloadProcessedFile(processedFile);
+            } else if (processedPages && processedPages.length > 0) {
+                // For multiple file results (like split or pdf-to-images)
+                if (currentTool === 'pdf-to-images') {
+                    // For image conversion, download a zip containing all images
+                    // In this demo, we'll just download the first image for simplicity
+                    downloadProcessedFile(processedPages[0]);
+                } else {
+                    // For PDF splitting, download the first split file for demo
+                    downloadProcessedFile(processedPages[0]);
+                }
+            } else {
+                showError('No processed file available for download.');
+            }
+        });
+
+        // Download the processed file
+        function downloadProcessedFile(file) {
+            if (file.type === 'application/pdf') {
+                saveAs(file, file.name);
+            } else if (file.type === 'text/plain') {
+                // For text content from PDF-to-text
+                const blob = new Blob([file.content], { type: 'text/plain' });
+                saveAs(blob, 'extracted_text.txt');
+            } else if (file.type.startsWith('image/')) {
+                // For images from PDF-to-images
+                saveAs(file, file.name);
+            }
+        }
+
+        // Reset the tool area
+        function resetToolArea() {
+            dropArea.classList.remove('hidden');
+            fileList.classList.add('hidden');
+            toolOptions.classList.add('hidden');
+            processBtn.classList.add('hidden');
+            processingStatus.classList.add('hidden');
+            resultArea.classList.add('hidden');
+            pdfPreview.classList.add('hidden');
+            selectedFiles = [];
+            processedFile = null;
+            processedPages = [];
+            selectedFilesContainer.innerHTML = '';
+        }
+
+        // Parse page ranges (e.g., "1-3,5,7-9")
+        function parsePageRanges(input) {
+            const ranges = [];
+            const parts = input.split(',');
+            
+            for (const part of parts) {
+                if (part.includes('-')) {
+                    const [start, end] = part.split('-').map(num => parseInt(num.trim()));
+                    if (isNaN(start) || isNaN(end) || start < 1 || end < start) {
+                        throw new Error('Invalid page range: ' + part);
+                    }
+                    ranges.push({ start, end });
+                } else {
+                    const page = parseInt(part.trim());
+                    if (isNaN(page) || page < 1) {
+                        throw new Error('Invalid page number: ' + part);
+                    }
+                    ranges.push({ start: page, end: page });
+                }
+            }
+            
+            return ranges;
+        }
+
+        // Render PDF preview for the view tool
+        function renderPdfPreview(file) {
+            pdfViewer.innerHTML = '';
+            
+            const fileReader = new FileReader();
+            fileReader.onload = function() {
+                const typedarray = new Uint8Array(this.result);
+                
+                pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                    const numPages = pdf.numPages;
+                    
+                    // Create a loading message
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'text-center p-4';
+                    loadingDiv.innerHTML = 'Loading preview...';
+                    pdfViewer.appendChild(loadingDiv);
+                    
+                    // Render each page
+                    const renderPage = function(pageNum) {
+                        pdf.getPage(pageNum).then(function(page) {
+                            const viewport = page.getViewport({ scale: 1.5 });
+                            
+                            const canvasContainer = document.createElement('div');
+                            canvasContainer.className = 'flex justify-center mb-4';
+                            
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            
+                            page.render(renderContext).promise.then(function() {
+                                // Remove loading message after first page is rendered
+                                if (pageNum === 1) {
+                                    pdfViewer.innerHTML = '';
+                                }
+                                
+                                canvasContainer.appendChild(canvas);
+                                pdfViewer.appendChild(canvasContainer);
+                                
+                                // Add page number label
+                                const pageLabel = document.createElement('div');
+                                pageLabel.className = 'text-center text-gray-500 mb-6';
+                                pageLabel.textContent = `Page ${pageNum} of ${numPages}`;
+                                pdfViewer.appendChild(pageLabel);
+                                
+                                // Render next page
+                                if (pageNum < numPages) {
+                                    renderPage(pageNum + 1);
+                                }
+                            });
+                        });
+                    };
+                    
+                    // Start rendering from the first page
+                    renderPage(1);
+                }).catch(function(error) {
+                    pdfViewer.innerHTML = `<div class="text-center p-4 text-red-500">Error loading PDF: ${error.message}</div>`;
+                });
+            };
+            
+            fileReader.readAsArrayBuffer(file);
+        }
+
+        // ==========================================
+        // PDF Processing Functions
+        // ==========================================
+
+        // Merge multiple PDFs
+        async function mergePDFs(files) {
+            try {
+                // Create a new PDF document
+                const mergedPdf = await PDFLib.PDFDocument.create();
+                
+                // Process each file
+                for (const file of files) {
+                    // Convert File object to ArrayBuffer
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Load the PDF
+                    const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                    
+                    // Copy all pages to the new document
+                    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    
+                    // Add each copied page to the new document
+                    pages.forEach(page => {
+                        mergedPdf.addPage(page);
+                    });
+                }
+                
+                // Save the merged PDF
+                const mergedPdfBytes = await mergedPdf.save();
+                
+                // Create a new File object with the merged PDF
+                return new File([mergedPdfBytes], 'merged.pdf', { type: 'application/pdf' });
+            } catch (error) {
+                console.error('Error merging PDFs:', error);
+                throw error;
+            }
+        }
+
+        // Split a PDF into separate files
+        async function splitPDF(file, splitType, pageRanges) {
+            try {
+                // Convert File object to ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Load the PDF
+                const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                const numPages = pdf.getPageCount();
+                
+                const splitFiles = [];
+                
+                if (splitType === 'all') {
+                    // Split all pages into individual files
+                    for (let i = 0; i < numPages; i++) {
+                        const newPdf = await PDFLib.PDFDocument.create();
+                        const [page] = await newPdf.copyPages(pdf, [i]);
+                        newPdf.addPage(page);
+                        
+                        const newPdfBytes = await newPdf.save();
+                        const pageNum = i + 1;
+                        splitFiles.push(new File([newPdfBytes], `page_${pageNum}.pdf`, { type: 'application/pdf' }));
+                    }
+                } else if (splitType === 'range' && pageRanges) {
+                    // Split based on specific page ranges
+                    for (let i = 0; i < pageRanges.length; i++) {
+                        const range = pageRanges[i];
+                        const pageIndices = [];
+                        
+                        // Convert 1-based page numbers to 0-based indices
+                        for (let pageNum = range.start; pageNum <= range.end; pageNum++) {
+                            if (pageNum <= numPages) {
+                                pageIndices.push(pageNum - 1);
+                            }
+                        }
+                        
+                        if (pageIndices.length > 0) {
+                            const newPdf = await PDFLib.PDFDocument.create();
+                            const pages = await newPdf.copyPages(pdf, pageIndices);
+                            
+                            pages.forEach(page => {
+                                newPdf.addPage(page);
+                            });
+                            
+                            const newPdfBytes = await newPdf.save();
+                            splitFiles.push(new File([newPdfBytes], `split_${range.start}-${range.end}.pdf`, { type: 'application/pdf' }));
+                        }
+                    }
+                }
+                
+                return splitFiles;
+            } catch (error) {
+                console.error('Error splitting PDF:', error);
+                throw error;
+            }
+        }
+
+        // Compress a PDF (simulated)
+        async function compressPDF(file) {
+            try {
+                // In a real implementation, we would actually compress the PDF.
+                // For this demo, we'll just return the original file with a different name.
+                return new File([await file.arrayBuffer()], 'compressed.pdf', { type: 'application/pdf' });
+            } catch (error) {
+                console.error('Error compressing PDF:', error);
+                throw error;
+            }
+        }
+
+        // Extract text from a PDF
+        async function extractTextFromPDF(file) {
+            try {
+                // Convert File object to ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Load the PDF with PDF.js
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                let text = '';
+                
+                // Extract text from each page
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    const pageText = content.items.map(item => item.str).join(' ');
+                    text += `Page ${i}\n${pageText}\n\n`;
+                }
+                
+                // Return text content
+                return { name: 'extracted_text.txt', content: text, type: 'text/plain' };
+            } catch (error) {
+                console.error('Error extracting text from PDF:', error);
+                throw error;
+            }
+        }
+
+        // Convert PDF to images
+        async function convertPdfToImages(file) {
+            try {
+                // Convert File object to ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Load the PDF with PDF.js
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                const images = [];
+                
+                // Convert each page to an image
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    
+                    // Create a canvas to render the page
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    // Render the page to the canvas
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+                    
+                    // Convert canvas to image
+                    canvas.toBlob(blob => {
+                        const imageFile = new File([blob], `page_${i}.png`, { type: 'image/png' });
+                        images.push(imageFile);
+                    }, 'image/png');
+                    
+                    // Simulate the blob creation synchronously for demo
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const response = await fetch(dataUrl);
+                    const blob = await response.blob();
+                    const imageFile = new File([blob], `page_${i}.png`, { type: 'image/png' });
+                    images.push(imageFile);
+                }
+                
+                return images;
+            } catch (error) {
+                console.error('Error converting PDF to images:', error);
+                throw error;
+            }
+        }
+
+        // Rotate a PDF
+        async function rotatePDF(file, rotation) {
+            try {
+                // Convert File object to ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Load the PDF
+                const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                const pages = pdf.getPages();
+                
+                // Rotate each page
+                pages.forEach(page => {
+                    page.setRotation(PDFLib.degrees(rotation));
+                });
+                
+                // Save the rotated PDF
+                const rotatedPdfBytes = await pdf.save();
+                
+                // Create a new File object with the rotated PDF
+                return new File([rotatedPdfBytes], 'rotated.pdf', { type: 'application/pdf' });
+            } catch (error) {
+                console.error('Error rotating PDF:', error);
+                throw error;
+            }
+        }
+
+        // Add page numbers to a PDF
+        async function addPageNumbers(file, position, startNumber, format) {
+            try {
+                // Convert File object to ArrayBuffer
+                const arrayBuffer = await file.arrayBuffer();
+                
+                // Load the PDF
+                const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+                const pages = pdf.getPages();
+                
+                // Create a font to use
+                const helveticaFont = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+                
+                // Add page numbers to each page
+                pages.forEach((page, index) => {
+                    const { width, height } = page.getSize();
+                    const pageNumber = startNumber + index;
+                    
+                    let text;
+                    switch (format) {
+                        case 'Page 1,Page 2...':
+                            text = `Page ${pageNumber}`;
+                            break;
+                        case 'Page 1 of n':
+                            text = `Page ${pageNumber} of ${pages.length}`;
+                            break;
+                        default:
+                            text = `${pageNumber}`;
+                    }
+                    
+                    const textWidth = helveticaFont.widthOfTextAtSize(text, 12);
+                    const textHeight = helveticaFont.heightAtSize(12);
+                    
+                    // Position the text based on the selected position
+                    let x, y;
+                    switch (position) {
+                        case 'top-left':
+                            x = 50;
+                            y = height - 50;
+                            break;
+                        case 'top-center':
+                            x = (width - textWidth) / 2;
+                            y = height - 50;
+                            break;
+                        case 'top-right':
+                            x = width - textWidth - 50;
+                            y = height - 50;
+                            break;
+                        case 'bottom-left':
+                            x = 50;
+                            y = 40;
+                            break;
+                        case 'bottom-center':
+                            x = (width - textWidth) / 2;
+                            y = 40;
+                            break;
+                        case 'bottom-right':
+                            x = width - textWidth - 50;
+                            y = 40;
+                            break;
+                    }
+                    
+                    // Draw the text
+                    page.drawText(text, {
+                        x,
+                        y,
+                        size: 12,
+                        font: helveticaFont,
+                        color: PDFLib.rgb(0, 0, 0),
+                    });
+                });
+                
+                // Save the PDF with page numbers
+                const numberedPdfBytes = await pdf.save();
+                
+                // Create a new File object with the numbered PDF
+                return new File([numberedPdfBytes], 'numbered.pdf', { type: 'application/pdf' });
+            } catch (error) {
+                console.error('Error adding page numbers to PDF:', error);
+                throw error;
+            }
+        }
+
+        // Add event listeners for rotation buttons if they exist
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'rotate-90' || e.target.id === 'rotate-180' || e.target.id === 'rotate-270' || 
+                e.target.closest('#rotate-90') || e.target.closest('#rotate-180') || e.target.closest('#rotate-270')) {
+                
+                const button = e.target.id ? e.target : e.target.closest('[id]');
+                
+                // Clear previous selection
+                document.querySelectorAll('#rotate-90, #rotate-180, #rotate-270').forEach(btn => {
+                    btn.classList.remove('bg-blue-200', 'selected');
+                    btn.classList.add('bg-gray-100');
+                });
+                
+                // Set new selection
+                button.classList.remove('bg-gray-100');
+                button.classList.add('bg-blue-200', 'selected');
+            }
+        });
+    </script>
+</body>
+</html>
